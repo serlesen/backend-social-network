@@ -3,9 +3,11 @@ package com.sergio.socialnetwork.controllers;
 import java.util.List;
 
 import com.sergio.socialnetwork.dto.ProfileDto;
+import com.sergio.socialnetwork.dto.UserDto;
 import com.sergio.socialnetwork.dto.UserSummaryDto;
 import com.sergio.socialnetwork.services.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,8 +31,9 @@ public class UserController {
     }
 
     @PostMapping("/friends/{friendId}")
-    public ResponseEntity<Void> addFriend(@PathVariable Long friendId) {
-        userService.addFriend(friendId);
+    public ResponseEntity<Void> addFriend(@AuthenticationPrincipal UserDto userDto,
+                                          @PathVariable Long friendId) {
+        userService.addFriend(userDto, friendId);
         return ResponseEntity.noContent().build();
     }
 

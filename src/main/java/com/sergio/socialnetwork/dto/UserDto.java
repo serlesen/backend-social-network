@@ -12,12 +12,11 @@ public class UserDto {
         super();
     }
 
-    public UserDto(Long id, String firstName, String lastName, String login, String token) {
+    public UserDto(Long id, String firstName, String lastName, String login) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
-        this.token = token;
     }
 
     public Long getId() {

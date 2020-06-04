@@ -41,9 +41,10 @@ public class CommunityController {
     }
 
     @PostMapping("/messages")
-    public ResponseEntity<MessageDto> postMessage(@RequestBody MessageDto messageDto) {
+    public ResponseEntity<MessageDto> postMessage(@AuthenticationPrincipal UserDto user,
+                                                  @RequestBody MessageDto messageDto) {
         return ResponseEntity.created(URI.create("/v1/community/messages"))
-                .body(communityService.postMessage(messageDto));
+                .body(communityService.postMessage(user, messageDto));
     }
 
     @PostMapping("/images")

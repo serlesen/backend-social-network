@@ -5,6 +5,7 @@ videos.
 
 https://www.youtube.com/playlist?list=PLab_if3UBk9-TuyqwMy3JvNHeCh7Ll9Wz
 
+
 ## Chapter 1
 
 In the first video, I've created the Maven project with Intellij and described
@@ -20,6 +21,7 @@ Finally, I've created the main method, run the project and saw that the Tomcat
 web server is ready to accept requests.
 
 https://www.youtube.com/watch?v=6Q0R8ftz7yY&list=PLab_if3UBk9-TuyqwMy3JvNHeCh7Ll9Wz&index=3&t=0s
+
 
 ## Chapter 2
 
@@ -63,3 +65,22 @@ in the Authorization header to authenticate the user.
 The advantage of the JWT is that it is stateless. The token itself contains the information about the
 user and the validity of the token. I only need the user to be stored in the database, the rest of
 the information comes inside the token.
+
+
+## Chapter 4
+
+In this fourth video, I've configured the database connexion with JPA. I've used the initialization-mode
+to always to build the database everytime the application starts. This may be a problem unless you
+write your SQL queries taking into account that the file was already executed.
+
+I've created the Java entities to be mapped against the database. I've mapped each column and created
+the one-to-many, many-to-one relationships between the tables. There was also a table that is connected
+with itself in a many-to-many relationship. The many-to-many relationships require an intermediary table
+to make the connection.
+
+And finally, I've created the Spring JPA repositories to read the data from the database. I've created
+those repository with methods which build the database just with the method naming, and I've also
+created other methods with custom queries.
+
+https://www.youtube.com/watch?v=-MNfy4eWvK8&list=PLab_if3UBk9-TuyqwMy3JvNHeCh7Ll9Wz&index=6&t=0s
+
