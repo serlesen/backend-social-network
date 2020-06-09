@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.sergio.socialnetwork.dto.ImageDto;
 import com.sergio.socialnetwork.dto.MessageDto;
 import com.sergio.socialnetwork.dto.UserDto;
+import com.sergio.socialnetwork.dto.UserSummaryDto;
 import com.sergio.socialnetwork.entities.Message;
 import com.sergio.socialnetwork.entities.User;
 import com.sergio.socialnetwork.repositories.MessageRepository;
@@ -45,8 +46,11 @@ public class CommunityService {
         List<Message> messages = messageRepository.findCommunityMessages(friendIds, PageRequest.of(page, PAGE_SIZE));
 
         List<MessageDto> messageDtoList = new ArrayList<>();
-        messages.forEach(message -> messageDtoList.add(new MessageDto(message.getId(),
-                message.getContent())));
+        messages.forEach(message -> messageDtoList.add(new MessageDto(
+                message.getId(),
+                message.getContent(),
+                new UserSummaryDto(message.getUser().getId(), message.getUser().getFirstName(), message.getUser().getLastName()),
+                message.getCreatedDate())));
 
         return messageDtoList;
     }
@@ -70,7 +74,10 @@ public class CommunityService {
 
         Message savedMessage = messageRepository.save(message);
 
-        return new MessageDto(savedMessage.getId(), savedMessage.getContent());
+        return new MessageDto(savedMessage.getId(),
+                savedMessage.getContent(),
+                new UserSummaryDto(savedMessage.getUser().getId(), savedMessage.getUser().getFirstName(), savedMessage.getUser().getLastName()),
+                savedMessage.getCreatedDate());
     }
 
     public ImageDto postImage(MultipartFile file, String title) {
