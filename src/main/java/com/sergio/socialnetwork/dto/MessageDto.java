@@ -3,7 +3,15 @@ package com.sergio.socialnetwork.dto;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class MessageDto {
 
     private Long id;
@@ -12,46 +20,4 @@ public class MessageDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime createdDate;
 
-    public MessageDto() {
-        super();
-    }
-
-    public MessageDto(Long id, String content, UserSummaryDto userDto, LocalDateTime createdDate) {
-        this.id = id;
-        this.content = content;
-        this.userDto = userDto;
-        this.createdDate = createdDate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public UserSummaryDto getUserDto() {
-        return userDto;
-    }
-
-    public void setUserDto(UserSummaryDto userDto) {
-        this.userDto = userDto;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
 }

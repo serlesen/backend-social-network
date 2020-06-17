@@ -13,13 +13,15 @@ import com.sergio.socialnetwork.dto.UserDto;
 import com.sergio.socialnetwork.dto.UserSummaryDto;
 import com.sergio.socialnetwork.entities.Message;
 import com.sergio.socialnetwork.entities.User;
+import com.sergio.socialnetwork.mappers.MessageMapper;
 import com.sergio.socialnetwork.repositories.MessageRepository;
 import com.sergio.socialnetwork.repositories.UserRepository;
-import org.springframework.data.domain.Page;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+@RequiredArgsConstructor
 @Service
 public class CommunityService {
 
@@ -29,10 +31,7 @@ public class CommunityService {
 
     private final UserRepository userRepository;
 
-    public CommunityService(MessageRepository messageRepository, UserRepository userRepository) {
-        this.messageRepository = messageRepository;
-        this.userRepository = userRepository;
-    }
+    private final MessageMapper messageMapper;
 
     public List<MessageDto> getCommunityMessages(UserDto userDto, int page) {
         User user = getUser(userDto);
@@ -45,14 +44,7 @@ public class CommunityService {
 
         List<Message> messages = messageRepository.findCommunityMessages(friendIds, PageRequest.of(page, PAGE_SIZE));
 
-        List<MessageDto> messageDtoList = new ArrayList<>();
-        messages.forEach(message -> messageDtoList.add(new MessageDto(
-                message.getId(),
-                message.getContent(),
-                new UserSummaryDto(message.getUser().getId(), message.getUser().getFirstName(), message.getUser().getLastName()),
-                message.getCreatedDate())));
-
-        return messageDtoList;
+        return messageMapper.messagesToMessageDtos(messages);
     }
 
     public List<ImageDto> getCommunityImages(int page) {
@@ -63,8 +55,7 @@ public class CommunityService {
     public MessageDto postMessage(UserDto userDto, MessageDto messageDto) {
         User user = getUser(userDto);
 
-        Message message = new Message();
-        message.setContent(messageDto.getContent());
+        Message message = messageMapper.messageDtoToMessage(messageDto);
         message.setUser(user);
 
         if (user.getMessages() == null) {
@@ -74,10 +65,7 @@ public class CommunityService {
 
         Message savedMessage = messageRepository.save(message);
 
-        return new MessageDto(savedMessage.getId(),
-                savedMessage.getContent(),
-                new UserSummaryDto(savedMessage.getUser().getId(), savedMessage.getUser().getFirstName(), savedMessage.getUser().getLastName()),
-                savedMessage.getCreatedDate());
+        return messageMapper.messageToMessageDto(savedMessage);
     }
 
     public ImageDto postImage(MultipartFile file, String title) {

@@ -6,10 +6,13 @@ import javax.transaction.Transactional;
 import com.sergio.socialnetwork.dto.CredentialsDto;
 import com.sergio.socialnetwork.dto.UserDto;
 import com.sergio.socialnetwork.entities.User;
+import com.sergio.socialnetwork.mappers.UserMapper;
 import com.sergio.socialnetwork.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class AuthenticationService {
 
@@ -17,10 +20,7 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
 
-    public AuthenticationService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-    }
+    private final UserMapper userMapper;
 
     @Transactional
     public UserDto authenticate(CredentialsDto credentialsDto) {
@@ -29,10 +29,7 @@ public class AuthenticationService {
 
         if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())) {
 
-            return new UserDto(user.getId(),
-                    user.getFirstName(),
-                    user.getLastName(),
-                    user.getLogin());
+            return userMapper.toUserDto(user);
         }
         throw new RuntimeException("Invalid password");
     }
@@ -40,9 +37,6 @@ public class AuthenticationService {
     public UserDto findByLogin(String login) {
         User user = userRepository.findByLogin(login)
                 .orElseThrow(() -> new RuntimeException("Token not found"));
-        return new UserDto(user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getLogin());
+        return userMapper.toUserDto(user);
     }
 }
