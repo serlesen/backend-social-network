@@ -100,3 +100,21 @@ object.
 
 https://www.youtube.com/watch?v=7UC3ZjQnric&list=PLab_if3UBk9-TuyqwMy3JvNHeCh7Ll9Wz&index=7&t=0s
 
+
+## Chapter 6
+
+In the sixth video, I introduce Liquibase, a database schema  manager. Liquibase will allow you to perform
+modifications on your database (schema or data) in a secured manner. You can save the modifications in changesets
+that will be run with the Liquibase Maven plugin. The changesets are immutable and should be with a rollback
+command to allow Liquibase to perform a satisfactory rollback if needed.
+
+The changesets are separated by file, usually named with the application number, by author and with a sequence number.
+Those changesets must not be modified, a Liquibase error will be thrown and Liquibase will be blocked if a
+changeset that already run in the database changed its content.
+
+Liquibase also has the rollback command to return to a previous state of the database. The rollback command only
+works if each changeset has an associated rollback query. When running the rollback command, you must specify how
+many changesets you want to revert.
+
+https://www.youtube.com/watch?v=uegLZi7-sGc&list=PLab_if3UBk9-TuyqwMy3JvNHeCh7Ll9Wz&index=8&t=0s
+

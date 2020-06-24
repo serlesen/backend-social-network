@@ -18,6 +18,7 @@
         <java.version>11</java.version>
         <lombok.version>1.18.12</lombok.version>
         <mapstruct.version>1.3.1.Final</mapstruct.version>
+        <liquibase.propertyFile>${project.basedir}/src/main/resources/liquibase.properties</liquibase.propertyFile>
     </properties>
 
     <dependencies>
@@ -66,5 +67,33 @@
             <version>${mapstruct.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
+                    <version>3.10.0</version>
+                    <configuration>
+                        <propertyFile>${liquibase.propertyFile}</propertyFile>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>hibernate-core</artifactId>
+                            <version>5.4.12.Final</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>javax.xml.bind</groupId>
+                            <artifactId>jaxb-api</artifactId>
+                            <version>2.3.1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
 </project>
 
