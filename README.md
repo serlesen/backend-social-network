@@ -20,8 +20,6 @@ will use the Web layer.
 Finally, I've created the main method, run the project and saw that the Tomcat
 web server is ready to accept requests.
 
-https://www.youtube.com/watch?v=6Q0R8ftz7yY&list=PLab_if3UBk9-TuyqwMy3JvNHeCh7Ll9Wz&index=3&t=0s
-
 
 ## Chapter 2
 
@@ -44,8 +42,6 @@ will be sent to and from the frontend. This avoids me so send the objects which 
 the database structure, hiding the database structure to the Internet and only showing
 what I want. I will need to map the data objects to the dto objects, but we will handle
 this later with some useful libraries.
-
-https://www.youtube.com/watch?v=0WaPVWspqBE&list=PLab_if3UBk9-TuyqwMy3JvNHeCh7Ll9Wz&index=4&t=0s
 
 
 ## Chapter 3
@@ -82,8 +78,6 @@ And finally, I've created the Spring JPA repositories to read the data from the 
 those repository with methods which build the database just with the method naming, and I've also
 created other methods with custom queries.
 
-https://www.youtube.com/watch?v=-MNfy4eWvK8&list=PLab_if3UBk9-TuyqwMy3JvNHeCh7Ll9Wz&index=6&t=0s
-
 
 ## Chapter 5
 
@@ -97,8 +91,6 @@ Mapstruct is used to map two objects field by field. I use Mapstruct to map the 
 objects. As I don't want entity objects to be returned by the controllers to manage the privacy, I use
 DTOs instead. Mapstruct, with some annotations, map field by field the incoming object to the outgoing
 object.
-
-https://www.youtube.com/watch?v=7UC3ZjQnric&list=PLab_if3UBk9-TuyqwMy3JvNHeCh7Ll9Wz&index=7&t=0s
 
 
 ## Chapter 6
@@ -116,5 +108,16 @@ Liquibase also has the rollback command to return to a previous state of the dat
 works if each changeset has an associated rollback query. When running the rollback command, you must specify how
 many changesets you want to revert.
 
-https://www.youtube.com/watch?v=uegLZi7-sGc&list=PLab_if3UBk9-TuyqwMy3JvNHeCh7Ll9Wz&index=8&t=0s
+
+## Chapter 7
+
+In this seventh video, I show you the aspect oriented programming with the RestException handler. This
+way, all the controllers will have their exceptions intercepted without any additional code.
+
+The aspect oriented programming surronds a part of the application. This way, when exiting from the controller
+with an application, the aspect will catch it.
+
+What I pretend to do with the RestException handler is to catch the functional exceptions and return a JSON
+document with some information about the error.
+
 

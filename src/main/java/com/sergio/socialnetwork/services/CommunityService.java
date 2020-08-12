@@ -10,14 +10,15 @@ import java.util.stream.Collectors;
 import com.sergio.socialnetwork.dto.ImageDto;
 import com.sergio.socialnetwork.dto.MessageDto;
 import com.sergio.socialnetwork.dto.UserDto;
-import com.sergio.socialnetwork.dto.UserSummaryDto;
 import com.sergio.socialnetwork.entities.Message;
 import com.sergio.socialnetwork.entities.User;
+import com.sergio.socialnetwork.exceptions.AppException;
 import com.sergio.socialnetwork.mappers.MessageMapper;
 import com.sergio.socialnetwork.repositories.MessageRepository;
 import com.sergio.socialnetwork.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -74,6 +75,6 @@ public class CommunityService {
 
     private User getUser(UserDto userDto) {
         return userRepository.findById(userDto.getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
     }
 }

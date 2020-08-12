@@ -11,9 +11,11 @@ import com.sergio.socialnetwork.dto.SignUpDto;
 import com.sergio.socialnetwork.dto.UserDto;
 import com.sergio.socialnetwork.dto.UserSummaryDto;
 import com.sergio.socialnetwork.entities.User;
+import com.sergio.socialnetwork.exceptions.AppException;
 import com.sergio.socialnetwork.mappers.UserMapper;
 import com.sergio.socialnetwork.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +63,7 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findByLogin(userDto.getLogin());
 
         if (optionalUser.isPresent()) {
-            throw new RuntimeException("Login already exists");
+            throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
         }
 
         User user = userMapper.signUpToUser(userDto);
@@ -74,6 +76,6 @@ public class UserService {
 
     private User getUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
     }
 }
