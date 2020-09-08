@@ -31,3 +31,13 @@ create table if not exists friends (
                                        friend_id bigint not null references social_network_user(id)
 )
 --rollback drop table friends;
+
+--changeset sergio:4
+create table image(
+    id bigserial primary key,
+    title varchar(100) not null,
+    path text not null,
+    user_id bigint references social_network_user(id),
+    created_date timestamp not null
+);
+create sequence image_sequence start 1000 increment 1;

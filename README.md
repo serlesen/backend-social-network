@@ -121,3 +121,17 @@ What I pretend to do with the RestException handler is to catch the functional e
 document with some information about the error.
 
 
+## Chapter 8
+
+In the eighth video, I explain how to properly upload an image to Spring Boot using the objet MultipartFile.
+This object will help me to save the file in the machine and obtain some information about the file (as the
+size and the name).
+
+Nevertheless, storing the image in the local machine is not the best idea. I explain why you should use a
+CDN (Content Delivery Network) or a NFS (Network File System) to share the image in multiple serveres all
+around the world. This way, the download of the image will be faster as coming from the backend.
+
+Meanwhile, I show the usage of the annotation @Value to inject configuration values into variables during
+the runtime.
+
+

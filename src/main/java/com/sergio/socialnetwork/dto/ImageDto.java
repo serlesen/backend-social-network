@@ -14,5 +14,6 @@ public class ImageDto {
     private Long id;
     private String title;
     private byte[] content;
+    private UserDto userDto;
 
 }

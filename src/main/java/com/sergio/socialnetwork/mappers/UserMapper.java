@@ -2,10 +2,12 @@ package com.sergio.socialnetwork.mappers;
 
 import java.util.List;
 
+import com.sergio.socialnetwork.dto.ImageDto;
 import com.sergio.socialnetwork.dto.ProfileDto;
 import com.sergio.socialnetwork.dto.SignUpDto;
 import com.sergio.socialnetwork.dto.UserDto;
 import com.sergio.socialnetwork.dto.UserSummaryDto;
+import com.sergio.socialnetwork.entities.Image;
 import com.sergio.socialnetwork.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -26,4 +28,9 @@ public interface UserMapper {
 
     @Mapping(target = "password", ignore = true)
     User signUpToUser(SignUpDto signUpDto);
+
+    @Mapping(target = "userDto", source = "user")
+    ImageDto imageToImageDto(Image image);
+
+    List<ImageDto> imagesToImageDtos(List<Image> images);
 }

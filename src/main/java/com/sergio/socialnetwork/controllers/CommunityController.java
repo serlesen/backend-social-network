@@ -1,5 +1,6 @@
 package com.sergio.socialnetwork.controllers;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -32,12 +33,6 @@ public class CommunityController {
         return ResponseEntity.ok(communityService.getCommunityMessages(user, page));
     }
 
-    @GetMapping("/images")
-    public ResponseEntity<List<ImageDto>> getCommunityImages(
-            @RequestParam(value = "page", defaultValue = "0") int page) {
-        return ResponseEntity.ok(communityService.getCommunityImages(page));
-    }
-
     @PostMapping("/messages")
     public ResponseEntity<MessageDto> postMessage(@AuthenticationPrincipal UserDto user,
                                                   @RequestBody MessageDto messageDto) {
@@ -46,9 +41,20 @@ public class CommunityController {
     }
 
     @PostMapping("/images")
-    public ResponseEntity<ImageDto> postImage(@RequestParam MultipartFile file,
-                                              @RequestParam(value = "title") String title) {
-        return ResponseEntity.created(URI.create("/v1/community/images"))
-                .body(communityService.postImage(file, title));
+    public ResponseEntity<ImageDto> postImage(
+            @AuthenticationPrincipal UserDto userDto,
+            @RequestParam MultipartFile file,
+            @RequestParam(value = "title") String title
+    ) throws IOException {
+        return ResponseEntity.created(URI.create("/community/images"))
+                .body(communityService.postImage(userDto, file, title));
+    }
+
+    @GetMapping("/images")
+    public ResponseEntity<List<ImageDto>> getCommunityImages(
+            @AuthenticationPrincipal UserDto userDto,
+            @RequestParam(value = "page", defaultValue = "0") int page
+    ) {
+        return ResponseEntity.ok(communityService.getCommunityImages(userDto, page));
     }
 }
