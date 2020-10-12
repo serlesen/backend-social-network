@@ -135,3 +135,17 @@ Meanwhile, I show the usage of the annotation @Value to inject configuration val
 the runtime.
 
 
+## Chapter 9.1
+
+Having the main parts of the application developped, I introduce now how to wirte the tests. This video
+handles not only the unit tests, but the integration tests.
+
+I start adding the required dependencies: JUnit5, Mockito and Spring Test. As the topic is too large for
+a single video, I've split in two videos: this one to configure the needed dependencies and write the unit
+test and the tests against the services; and the second one to write the tests against the controllers and
+the repositories.
+
+For the unit tests, I show how to use the assertion and the reflection is I need to inject a field inside 
+a bean. For the service tests, I show how Mockito inject mocks and spies to the service to test.
+
+
