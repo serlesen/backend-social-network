@@ -1,5 +1,7 @@
 package com.sergio.socialnetwork.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +16,7 @@ public class ImageDto {
     private Long id;
     private String title;
     private String path;
-    private UserDto userDto;
+    private UserSummaryDto userDto;
+    private LocalDateTime createdDate;
 
 }

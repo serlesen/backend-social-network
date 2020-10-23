@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <social_network_user
+            id="10"
+            first_name="first"
+            last_name="last"
+            login="login"
+            password="password"
+            created_date="2020-01-01 12:00:00"
+    />
+    <image
+            id="100"
+            title="title"
+            path="/abd"
+            user_id="10"
+            created_date="2020-01-01 12:00:00"
+    />
+</dataset>

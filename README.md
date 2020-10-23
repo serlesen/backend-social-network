@@ -149,3 +149,18 @@ For the unit tests, I show how to use the assertion and the reflection is I need
 a bean. For the service tests, I show how Mockito inject mocks and spies to the service to test.
 
 
+## Chapter 9.2
+
+Let's now take into account the controllers and repositories to test. Those tests are more complicated because
+I will need the Spring context.
+
+For the controllers, I will load the Spring context to have the endpoints available. Then, I have MockMvc to
+perform the HTTP request and the assertions on the response. As with mockito, I can inject mocks and beans, but
+I have to use another annotation.
+
+When talking about the database, I've chosen H2 in-memory database. This way, I don't need a real database to
+be running when running the tests. The H2 database will be created just for the tests, and destroyed at the end.
+Here, I will also need the Spring context to handle the repositories. And I must indicate to Liquibase to work
+with H2 to inject data into the database, this way, the tests will be more real, with some exisiting data.
+
+

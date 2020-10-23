@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: test
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:h2:mem:socialnetworkdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+    initialization-mode: always
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: H2
+    open-in-view: false
