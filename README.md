@@ -164,3 +164,15 @@ Here, I will also need the Spring context to handle the repositories. And I must
 with H2 to inject data into the database, this way, the tests will be more real, with some exisiting data.
 
 
+## Chapter 9.3
+
+In this chapter, i've introduced the usage of Podam to create objects with random values. This is very useful
+for testing purpose, as the fields are set with random values that should be accepted in production.
+
+Nevertheless, care must be taken when creating the factory to avoid infinite loops (creating a child in the
+parent, which creates again the parent, and the children again, and so on).
+
+I can also create custom factory for specific fields if I want concrete values.
+
+
+

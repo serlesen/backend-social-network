@@ -9,10 +9,13 @@ import com.sergio.socialnetwork.dto.ProfileDto;
 import com.sergio.socialnetwork.dto.SignUpDto;
 import com.sergio.socialnetwork.dto.UserDto;
 import com.sergio.socialnetwork.dto.UserSummaryDto;
+import com.sergio.socialnetwork.entities.Image;
+import com.sergio.socialnetwork.entities.Message;
 import com.sergio.socialnetwork.entities.User;
 import com.sergio.socialnetwork.mappers.UserMapper;
 import com.sergio.socialnetwork.mappers.UserMapperImpl;
 import com.sergio.socialnetwork.repositories.UserRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +24,9 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import uk.co.jemos.podam.api.DefaultClassInfoStrategy;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -40,18 +46,24 @@ public class UserServiceTest {
     @Spy
     private UserMapper userMapper = new UserMapperImpl();
 
+    private static PodamFactory podamFactory;
+
+    @BeforeAll
+    public static void setUp() {
+         podamFactory = new PodamFactoryImpl();
+
+        // to avoid infinite loops creating random data
+        DefaultClassInfoStrategy classInfoStrategy = DefaultClassInfoStrategy.getInstance();
+        classInfoStrategy.addExcludedField(Image.class, "user");
+        classInfoStrategy.addExcludedField(Message.class, "user");
+
+        podamFactory.setClassStrategy(classInfoStrategy);
+    }
+
     @Test
     void testProfileData() {
         // given
-        Optional<User> user = Optional.of(User.builder()
-                .id(10L)
-                .firstName("first")
-                .lastName("last")
-                .login("login")
-                .password("pass")
-                .createdDate(LocalDateTime.now())
-                .build()
-        );
+        Optional<User> user = Optional.of(podamFactory.manufacturePojo(User.class));
         Mockito.when(userRepository.findById(10L)).thenReturn(user);
 
         // when
@@ -60,39 +72,25 @@ public class UserServiceTest {
         // then
         verify(userRepository).findById(10L);
         assertAll(() -> {
-            assertEquals("first", profile.getUserDto().getFirstName());
-            assertEquals("last", profile.getUserDto().getLastName());
+            assertEquals(user.get().getFirstName(), profile.getUserDto().getFirstName());
+            assertEquals(user.get().getLastName(), profile.getUserDto().getLastName());
         });
     }
 
     @Test
     void testAddFriend() {
         // given
-        UserDto userDto = new UserDto(1L, "first", "last", "login", "token");
-        long friendId = 10L;
+        UserDto userDto = podamFactory.manufacturePojo(UserDto.class);
 
-        Optional<User> user = Optional.of(User.builder()
-                .id(1L)
-                .firstName("first")
-                .lastName("last")
-                .login("login")
-                .password("pass")
-                .createdDate(LocalDateTime.now())
-                .build());
-        Mockito.when(userRepository.findById(1L)).thenReturn(user);
+        Optional<User> user = Optional.of(podamFactory.manufacturePojo(User.class));
+        user.get().setFriends(null);
+        Mockito.when(userRepository.findById(userDto.getId())).thenReturn(user);
 
-        Optional<User> friend = Optional.of(User.builder()
-                .id(10L)
-                .firstName("first_friend")
-                .lastName("last_friend")
-                .login("login_friend")
-                .password("pass")
-                .createdDate(LocalDateTime.now())
-                .build());
-        Mockito.when(userRepository.findById(10L)).thenReturn(friend);
+        Optional<User> friend = Optional.of(podamFactory.manufacturePojo(User.class));
+        Mockito.when(userRepository.findById(friend.get().getId())).thenReturn(friend);
 
         // when
-        userService.addFriend(userDto, friendId);
+        userService.addFriend(userDto, friend.get().getId());
 
         // then
         verify(userRepository).save(argThat(argument -> argument.getFriends().size() == 1));
@@ -101,18 +99,10 @@ public class UserServiceTest {
     @Test
     void testSignUp() {
         // given
-        SignUpDto signUpDto = new SignUpDto("first", "last", "login", "pass".toCharArray());
+        SignUpDto signUpDto = podamFactory.manufacturePojo(SignUpDto.class);
+        User user = podamFactory.manufacturePojo(User.class);
 
-        User user = User.builder()
-                .id(10L)
-                .firstName("first")
-                .lastName("last")
-                .login("login")
-                .password("pass")
-                .createdDate(LocalDateTime.now())
-                .build();
-
-        when(userRepository.findByLogin("login"))
+        when(userRepository.findByLogin(signUpDto.getLogin()))
                 .thenReturn(Optional.empty());
         when(userRepository.save(argThat(argument -> argument.getFirstName().equals(signUpDto.getFirstName())
                 && argument.getLastName().equals(signUpDto.getLastName()))))
@@ -125,8 +115,8 @@ public class UserServiceTest {
 
         // then
         assertAll(() -> {
-            assertEquals(signUpDto.getFirstName(), userDto.getFirstName());
-            assertEquals(signUpDto.getLastName(), userDto.getLastName());
+            assertEquals(user.getFirstName(), userDto.getFirstName());
+            assertEquals(user.getLastName(), userDto.getLastName());
         });
     }
 
@@ -134,16 +124,10 @@ public class UserServiceTest {
     void testSearchUser() {
         // given
         String term = "term";
+        User user = podamFactory.manufacturePojo(User.class);
 
         when(userRepository.search("%term%"))
-                .thenReturn(Arrays.asList(User.builder()
-                        .id(21L)
-                        .firstName("first")
-                        .lastName("last")
-                        .login("login")
-                        .password("pass")
-                        .createdDate(LocalDateTime.now())
-                        .build()));
+                .thenReturn(Arrays.asList(user));
 
         // when
         List<UserSummaryDto> users = userService.searchUsers(term);
@@ -151,7 +135,7 @@ public class UserServiceTest {
         // then
         assertAll(() -> {
             assertEquals(1, users.size());
-            assertEquals("first", users.get(0).getFirstName());
+            assertEquals(user.getFirstName(), users.get(0).getFirstName());
         });
         verify(userRepository).search("%term%");
     }

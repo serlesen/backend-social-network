@@ -22,6 +22,7 @@ import com.sergio.socialnetwork.mappers.UserMapperImpl;
 import com.sergio.socialnetwork.repositories.ImageRepository;
 import com.sergio.socialnetwork.repositories.MessageRepository;
 import com.sergio.socialnetwork.repositories.UserRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
+import uk.co.jemos.podam.api.DefaultClassInfoStrategy;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -60,6 +64,20 @@ public class CommunityServiceTest {
     @Spy
     private UserMapper userMapper = new UserMapperImpl();
 
+    private static PodamFactory podamFactory;
+
+    @BeforeAll
+    public static void setUpAll() {
+        podamFactory = new PodamFactoryImpl();
+
+        // to avoid infinite loops creating random data
+        DefaultClassInfoStrategy classInfoStrategy = DefaultClassInfoStrategy.getInstance();
+        classInfoStrategy.addExcludedField(Image.class, "user");
+        classInfoStrategy.addExcludedField(Message.class, "user");
+
+        podamFactory.setClassStrategy(classInfoStrategy);
+    }
+
     @BeforeEach
     public void setUp() {
         ReflectionTestUtils.setField(communityService, "nfsPath", "/tmp");
@@ -69,74 +87,47 @@ public class CommunityServiceTest {
     @Test
     void testGetCommunityMessages() {
         // given
-        UserDto userDto = new UserDto(10L, "first", "last", "login", "token");
+        UserDto userDto = podamFactory.manufacturePojo(UserDto.class);
 
-        List<Message> message = Arrays.asList(
+        List<Message> messages = Arrays.asList(
                 Message.builder().id(1L).content("title1").createdDate(LocalDateTime.now().minus(5, ChronoUnit.SECONDS)).build(),
                 Message.builder().id(2L).content("title2").createdDate(LocalDateTime.now()).build());
 
-        User friend = User.builder()
-                .id(21L)
-                .firstName("first_friend")
-                .lastName("last_friend")
-                .login("login_friend")
-                .password("pass")
-                .messages(message)
-                .createdDate(LocalDateTime.now())
-                .build();
-        Optional<User> user = Optional.of(User.builder()
-                .id(10L)
-                .firstName("first")
-                .lastName("last")
-                .login("login")
-                .password("pass")
-                .friends(Collections.singletonList(friend))
-                .createdDate(LocalDateTime.now())
-                .build());
-        Mockito.when(userRepository.findById(10L)).thenReturn(user);
-        Mockito.when(messageRepository.findCommunityMessages(Arrays.asList(21L, 10L), PageRequest.of(1, 10)))
-                .thenReturn(message);
+        User friend = podamFactory.manufacturePojo(User.class);
+        friend.setMessages(messages);
+        Optional<User> user = Optional.of(podamFactory.manufacturePojo(User.class));
+        user.get().setFriends(Collections.singletonList(friend));
+
+        Mockito.when(userRepository.findById(userDto.getId())).thenReturn(user);
+        Mockito.when(messageRepository.findCommunityMessages(Arrays.asList(friend.getId(), user.get().getId()), PageRequest.of(1, 10)))
+                .thenReturn(messages);
 
         // when
         List<MessageDto> messageDtos = communityService.getCommunityMessages(userDto, 1);
 
         // then
         assertAll(() -> {
-            assertEquals(message.size(), messageDtos.size());
-            assertEquals(message.get(0).getContent(), messageDtos.get(0).getContent());
-            assertEquals(message.get(1).getContent(), messageDtos.get(1).getContent());
+            assertEquals(messages.size(), messageDtos.size());
+            assertEquals(messages.get(0).getContent(), messageDtos.get(0).getContent());
+            assertEquals(messages.get(1).getContent(), messageDtos.get(1).getContent());
         });
     }
 
     @Test
     void testGetCommunityImages() {
         // given
-        UserDto userDto = UserDto.builder().id(10L).firstName("first").lastName("last").token("token").build();
+        UserDto userDto = podamFactory.manufacturePojo(UserDto.class);
 
         List<Image> images = Arrays.asList(
                 Image.builder().id(1L).title("title1").createdDate(LocalDateTime.now().minus(5, ChronoUnit.SECONDS)).build(),
                 Image.builder().id(2L).title("title2").createdDate(LocalDateTime.now()).build());
 
-        User friend = User.builder()
-                .id(21L)
-                .firstName("first_friend")
-                .lastName("last_friend")
-                .login("login_friend")
-                .password("pass")
-                .images(images)
-                .createdDate(LocalDateTime.now())
-                .build();
-        Optional<User> user = Optional.of(User.builder()
-                .id(10L)
-                .firstName("first")
-                .lastName("last")
-                .login("login")
-                .password("pass")
-                .friends(Collections.singletonList(friend))
-                .createdDate(LocalDateTime.now())
-                .build());
-        Mockito.when(userRepository.findById(10L)).thenReturn(user);
-        Mockito.when(imageRepository.findCommunityImages(Arrays.asList(21L, 10L), PageRequest.of(1, 10)))
+        User friend = podamFactory.manufacturePojo(User.class);
+        friend.setImages(images);
+        Optional<User> user = Optional.of(podamFactory.manufacturePojo(User.class));
+        user.get().setFriends(Collections.singletonList(friend));
+        Mockito.when(userRepository.findById(userDto.getId())).thenReturn(user);
+        Mockito.when(imageRepository.findCommunityImages(Arrays.asList(friend.getId(), user.get().getId()), PageRequest.of(1, 10)))
                 .thenReturn(images);
 
         // when
@@ -153,51 +144,34 @@ public class CommunityServiceTest {
     @Test
     void testPostMessage() {
         // given
-        UserDto userDto = UserDto.builder().id(10L).firstName("first").lastName("last").token("token").build();
-        MessageDto messageDto = MessageDto.builder()
-                .content("content")
-                .userDto(new UserSummaryDto(10L, "first", "last"))
-                .createdDate(LocalDateTime.now())
-                .build();
+        UserDto userDto = podamFactory.manufacturePojo(UserDto.class);
+        MessageDto messageDto = podamFactory.manufacturePojo(MessageDto.class);
 
-        User user = User.builder()
-                .id(10L)
-                .firstName("first")
-                .lastName("last")
-                .login("login")
-                .password("pass")
-                .createdDate(LocalDateTime.now())
-                .build();
+        User user = podamFactory.manufacturePojo(User.class);
 
         Optional<User> oUser = Optional.of(user);
-        Mockito.when(userRepository.findById(10L)).thenReturn(oUser);
+        Mockito.when(userRepository.findById(userDto.getId())).thenReturn(oUser);
 
+        Message message = podamFactory.manufacturePojo(Message.class);
         when(messageRepository.save(any()))
-                .thenReturn(new Message(1L, "content", user, LocalDateTime.now()));
+                .thenReturn(message);
 
         // when
         MessageDto newMessage = communityService.postMessage(userDto, messageDto);
 
         // then
-        assertEquals(messageDto.getContent(), newMessage.getContent());
-        assertEquals(messageDto.getUserDto().getId(), newMessage.getUserDto().getId());
+        assertEquals(message.getContent(), newMessage.getContent());
         verify(messageRepository).save(any());
     }
 
     @Test
     void testPostImage() throws IOException {
         // given
-        UserDto userDto = UserDto.builder().id(10L).firstName("first").lastName("last").token("token").build();
+        UserDto userDto = podamFactory.manufacturePojo(UserDto.class);
 
-        Optional<User> user = Optional.of(User.builder()
-                .id(10L)
-                .firstName("first")
-                .lastName("last")
-                .login("login")
-                .password("pass")
-                .createdDate(LocalDateTime.now())
-                .build());
-        Mockito.when(userRepository.findById(10L)).thenReturn(user);
+        Optional<User> user = Optional.of(podamFactory.manufacturePojo(User.class));
+        user.get().setImages(null);
+        Mockito.when(userRepository.findById(userDto.getId())).thenReturn(user);
 
         // when
         ImageDto image = communityService.postImage(userDto, mock(MultipartFile.class), "title");

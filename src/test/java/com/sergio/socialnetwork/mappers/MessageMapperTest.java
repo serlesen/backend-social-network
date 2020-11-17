@@ -1,7 +1,6 @@
 package com.sergio.socialnetwork.mappers;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sergio.socialnetwork.dto.MessageDto;
@@ -11,6 +10,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.co.jemos.podam.api.DefaultClassInfoStrategy;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +21,20 @@ public class MessageMapperTest {
     private static MessageMapper messageMapper = new MessageMapperImpl();
     private static UserMapper userMapper = new UserMapperImpl();
 
+    private static PodamFactory podamFactory;
+
     @BeforeAll
     public static void setUp() {
+        podamFactory = new PodamFactoryImpl();
+
+        // to avoid infinite loops creating random data
+        DefaultClassInfoStrategy classInfoStrategy = DefaultClassInfoStrategy.getInstance();
+        classInfoStrategy.addExcludedField(User.class, "messages");
+        classInfoStrategy.addExcludedField(User.class, "images");
+        classInfoStrategy.addExcludedField(User.class, "friends");
+
+        podamFactory.setClassStrategy(classInfoStrategy);
+
         ReflectionTestUtils.setField(messageMapper, "userMapper", userMapper);
     }
 
@@ -28,12 +42,7 @@ public class MessageMapperTest {
     @Disabled("Don't know why podam don't fill the User field from Message when running all the test at once.")
     void testMapSingleMessage() {
         // given
-        Message msg = Message.builder()
-                .id(1L)
-                .content("content")
-                .user(User.builder().id(1L).firstName("first").lastName("last").build())
-                .createdDate(LocalDateTime.now())
-                .build();
+        Message msg = podamFactory.manufacturePojo(Message.class);
 
         // when
         MessageDto msgDto = messageMapper.messageToMessageDto(msg);
@@ -48,9 +57,7 @@ public class MessageMapperTest {
     @Test
     void testMapMessageList() {
         // given
-        List<Message> messages = Arrays.asList(
-                Message.builder().id(1L).content("first").user(new User()).createdDate(LocalDateTime.now()).build(),
-                Message.builder().id(2L).content("second").user(new User()).createdDate(LocalDateTime.now()).build());
+        List<Message> messages = podamFactory.manufacturePojo(ArrayList.class, Message.class);
 
         // when
         List<MessageDto> messageDtos = messageMapper.messagesToMessageDtos(messages);
@@ -67,10 +74,7 @@ public class MessageMapperTest {
     @Test
     void testMapMessageDto() {
         // given
-        MessageDto messageDto = MessageDto.builder()
-                .content("content")
-                .createdDate(LocalDateTime.now())
-                .build();
+        MessageDto messageDto = podamFactory.manufacturePojo(MessageDto.class);
 
         // when
         Message message = messageMapper.messageDtoToMessage(messageDto);

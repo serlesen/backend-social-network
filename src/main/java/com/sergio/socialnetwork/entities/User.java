@@ -14,16 +14,19 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import uk.co.jemos.podam.common.PodamCollection;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,6 +35,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "social_network_user")
+@ToString(exclude = "friends")
 public class User {
 
     @Id
@@ -65,6 +69,7 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
+    @PodamCollection(nbrElements = 10)
     private List<Message> messages;
 
     @ManyToMany(cascade = CascadeType.ALL)

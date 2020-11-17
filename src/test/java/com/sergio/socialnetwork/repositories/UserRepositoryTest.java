@@ -3,7 +3,6 @@ package com.sergio.socialnetwork.repositories;
 import java.util.List;
 import java.util.Optional;
 
-
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.sergio.socialnetwork.entities.User;

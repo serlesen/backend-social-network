@@ -12,14 +12,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import com.sergio.socialnetwork.podam.URLStringStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import uk.co.jemos.podam.common.PodamExclude;
+import uk.co.jemos.podam.common.PodamStrategyValue;
 
 @Builder
 @Data
@@ -28,6 +32,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "image")
+@ToString(exclude = "user")
 public class Image {
 
     @Id
@@ -49,6 +54,7 @@ public class Image {
     private String title;
 
     @Column(nullable = false)
+    @PodamStrategyValue(URLStringStrategy.class)
     private String path;
 
     @ManyToOne(fetch = FetchType.LAZY)

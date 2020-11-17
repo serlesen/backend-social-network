@@ -125,6 +125,11 @@
             <artifactId>spring-test-dbunit</artifactId>
             <version>${spring-test-dbunit.version}</version>
         </dependency>
+        <dependency>
+            <groupId>uk.co.jemos.podam</groupId>
+            <artifactId>podam</artifactId>
+            <version>7.2.5.RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>
