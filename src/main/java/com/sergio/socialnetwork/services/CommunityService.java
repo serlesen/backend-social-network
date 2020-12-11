@@ -5,15 +5,16 @@ import java.util.List;
 
 import com.sergio.socialnetwork.dto.ImageDto;
 import com.sergio.socialnetwork.dto.MessageDto;
+import com.sergio.socialnetwork.dto.UserDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class CommunityService {
 
-    public List<MessageDto> getCommunityMessages(int page) {
-        return Arrays.asList(new MessageDto(1L, "First message"),
-                new MessageDto(2L, "Second message"));
+    public List<MessageDto> getCommunityMessages(UserDto user, int page) {
+        return Arrays.asList(new MessageDto(1L, "First message " + user.getFirstName()),
+                new MessageDto(2L, "Second message " + user.getFirstName()));
     }
 
     public List<ImageDto> getCommunityImages(int page) {
