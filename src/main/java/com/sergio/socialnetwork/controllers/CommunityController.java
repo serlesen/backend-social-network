@@ -5,8 +5,12 @@ import java.util.List;
 
 import com.sergio.socialnetwork.dto.ImageDto;
 import com.sergio.socialnetwork.dto.MessageDto;
+import com.sergio.socialnetwork.dto.UserDto;
+import com.sergio.socialnetwork.services.AuthenticationService;
 import com.sergio.socialnetwork.services.CommunityService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,16 +23,21 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/v1/community")
 public class CommunityController {
 
+    private final AuthenticationService authenticationService;
     private final CommunityService communityService;
 
-    public CommunityController(CommunityService communityService) {
+    public CommunityController(AuthenticationService authenticationService, CommunityService communityService) {
+        this.authenticationService = authenticationService;
         this.communityService = communityService;
     }
 
     @GetMapping("/messages")
     public ResponseEntity<List<MessageDto>> getCommunityMessages(
+            @AuthenticationPrincipal OAuth2User principal,
             @RequestParam(value = "page", defaultValue = "0") int page) {
-        return ResponseEntity.ok(communityService.getCommunityMessages(page));
+
+        UserDto user = authenticationService.findOrCreateByLogin(principal);
+        return ResponseEntity.ok(communityService.getCommunityMessages(user, page));
     }
 
     @GetMapping("/images")
