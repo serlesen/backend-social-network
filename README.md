@@ -175,4 +175,18 @@ parent, which creates again the parent, and the children again, and so on).
 I can also create custom factory for specific fields if I want concrete values.
 
 
+## Chapter 9.4
+
+Another chapter for the tests. This time for the code coverage with Jacoco, but covering the unit tests and the
+integration tests separatly.
+
+First, I need to separate the unit tests and the integration tests in my maven workflow. For that, I've added the
+surefire and failsafe plugins to run the tests separatly. I must ensure to have the integration tests named with
+the '*IT.java' suffix to be easily identified. I need to use those plugins because they have much more configurations
+than Maven (which will be useful to connect jacoco).
+
+When the tests are run separatly, I can configure the jacoco plugin. The javacoco plugin must add an argument to
+the surefire and failsafe plugins before they run the tests. This argument is the user agent to inspect the tests
+execution to create the coverage report. At the end of the test phases, jacoco will run another step to generate
+the reports for both the unit and integration tests separatly.
 

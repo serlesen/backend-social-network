@@ -38,7 +38,7 @@ public class AuthenticationService {
 
     public UserDto findByLogin(String login) {
         User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new AppException("Token not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Login not found", HttpStatus.NOT_FOUND));
         return userMapper.toUserDto(user);
     }
 }
