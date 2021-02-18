@@ -3,10 +3,14 @@ package com.sergio.socialnetwork.controllers;
 import java.net.URI;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import com.sergio.socialnetwork.dto.ImageDto;
 import com.sergio.socialnetwork.dto.MessageDto;
+import com.sergio.socialnetwork.dto.UserDto;
 import com.sergio.socialnetwork.services.CommunityService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,14 +31,33 @@ public class CommunityController {
 
     @GetMapping("/messages")
     public ResponseEntity<List<MessageDto>> getCommunityMessages(
-            @RequestParam(value = "page", defaultValue = "0") int page) {
-        return ResponseEntity.ok(communityService.getCommunityMessages(page));
+            @AuthenticationPrincipal UserDto user,
+            @RequestParam(value = "nextPage", defaultValue = "false") boolean nextPage,
+            HttpSession session) {
+        Integer currentPage = (Integer) session.getAttribute("currentPageMessages");
+        if (currentPage == null) {
+            currentPage = 0;
+        }
+        if (nextPage) {
+            currentPage++;
+        }
+        session.setAttribute("currentPageMessages", currentPage);
+        return ResponseEntity.ok(communityService.getCommunityMessages(user, currentPage));
     }
 
     @GetMapping("/images")
     public ResponseEntity<List<ImageDto>> getCommunityImages(
-            @RequestParam(value = "page", defaultValue = "0") int page) {
-        return ResponseEntity.ok(communityService.getCommunityImages(page));
+            @RequestParam(value = "nextPage", defaultValue = "false") boolean nextPage,
+            HttpSession session) {
+        Integer currentPage = (Integer) session.getAttribute("currentPageImages");
+        if (currentPage == null) {
+            currentPage = 0;
+        }
+        if (nextPage) {
+            currentPage++;
+        }
+        session.setAttribute("currentPageImages", currentPage);
+        return ResponseEntity.ok(communityService.getCommunityImages(currentPage));
     }
 
     @PostMapping("/messages")
