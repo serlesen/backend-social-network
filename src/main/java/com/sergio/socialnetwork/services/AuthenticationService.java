@@ -10,12 +10,14 @@ import com.sergio.socialnetwork.exceptions.AppException;
 import com.sergio.socialnetwork.mappers.UserMapper;
 import com.sergio.socialnetwork.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AuthenticationService {
 
     private final PasswordEncoder passwordEncoder;
@@ -30,7 +32,7 @@ public class AuthenticationService {
                 .orElseThrow(() -> new AppException("User not found", HttpStatus.NOT_FOUND));
 
         if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())) {
-
+            log.debug("User {} authenticated correctly", credentialsDto.getLogin());
             return userMapper.toUserDto(user);
         }
         throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);

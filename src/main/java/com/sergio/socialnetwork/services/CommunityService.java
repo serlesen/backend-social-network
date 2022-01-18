@@ -23,6 +23,7 @@ import com.sergio.socialnetwork.repositories.ImageRepository;
 import com.sergio.socialnetwork.repositories.MessageRepository;
 import com.sergio.socialnetwork.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class CommunityService {
 
     @Value("${app.nfs.path:/tmp}")
@@ -59,6 +61,8 @@ public class CommunityService {
 
         List<Message> messages = messageRepository.findCommunityMessages(friendIds, PageRequest.of(page, PAGE_SIZE));
 
+        log.trace("Reading the page {} of messages for user {}", page, userDto.getId());
+
         return messageMapper.messagesToMessageDtos(messages);
     }
 
@@ -73,6 +77,9 @@ public class CommunityService {
 
         List<Image> images = imageRepository.findCommunityImages(friendIds,
                 PageRequest.of(page, PAGE_SIZE));
+
+        log.trace("Reading the page {} of images for user {}", page, userDto.getId());
+
         return userMapper.imagesToImageDtos(images);
     }
 
@@ -88,6 +95,8 @@ public class CommunityService {
         user.getMessages().add(message);
 
         Message savedMessage = messageRepository.save(message);
+
+        log.debug("User {} created new message", userDto.getId());
 
         return messageMapper.messageToMessageDto(savedMessage);
     }
@@ -119,6 +128,8 @@ public class CommunityService {
         user.getImages().add(image);
 
         userRepository.save(user);
+
+        log.debug("User {} created new image", userDto.getId());
 
         return userMapper.imageToImageDto(image);
     }

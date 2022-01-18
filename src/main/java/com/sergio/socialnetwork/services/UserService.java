@@ -15,12 +15,14 @@ import com.sergio.socialnetwork.exceptions.AppException;
 import com.sergio.socialnetwork.mappers.UserMapper;
 import com.sergio.socialnetwork.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -31,6 +33,7 @@ public class UserService {
 
     public ProfileDto getProfile(Long userId) {
         User user = getUser(userId);
+        log.trace("Reading profile for user {}", userId);
         return userMapper.userToProfileDto(user);
     }
 
@@ -45,6 +48,8 @@ public class UserService {
 
         user.getFriends().add(newFriend);
 
+        log.info("Current user {} is now friend with {}", userDto.getId(), friendId);
+
         userRepository.save(user);
     }
 
@@ -55,6 +60,8 @@ public class UserService {
         users.forEach(user ->
                 usersToBeReturned.add(new UserSummaryDto(user.getId(), user.getFirstName(), user.getLastName()))
         );
+
+        log.debug("Searching for user by '{}'. Found {} users", term, usersToBeReturned.size());
 
         return usersToBeReturned;
     }
@@ -70,6 +77,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
 
         User savedUser = userRepository.save(user);
+
+        log.info("Creating new user {}", userDto.getLogin());
 
         return userMapper.toUserDto(savedUser);
     }

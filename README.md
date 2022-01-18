@@ -190,3 +190,17 @@ the surefire and failsafe plugins before they run the tests. This argument is th
 execution to create the coverage report. At the end of the test phases, jacoco will run another step to generate
 the reports for both the unit and integration tests separatly.
 
+
+## Chapter 10
+
+In this tenth video, I show how to write logs in the application and how to configure a logger. I will show 
+two loggers (logback and log4j2) and an interface (slf4j). Using an logging interface I don't need to change the
+code when changing the logging engine.
+
+In the code, I show the different logging levels and how to print variables in an optimal way.
+
+For the configuration, I show for both loggers the different layout to reach a similar result. I also show how
+to print to a file and to the console at the same time.
+
+
+
