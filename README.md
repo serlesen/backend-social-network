@@ -84,3 +84,29 @@ created other methods with custom queries.
 
 https://www.youtube.com/watch?v=-MNfy4eWvK8&list=PLab_if3UBk9-TuyqwMy3JvNHeCh7Ll9Wz&index=6&t=0s
 
+
+## Chapter 4.1
+
+In this video, I've used MongoDB as the database of my application. MongoDB is a noSQL database, with
+document in a JSON format. It's based on collections of JSON documents.
+
+I've created some entities which reflect the JSON docuements and allow me to easily map the content
+of MongoDB to my objects. And in the reverse way, when saving an entity, it will directly create
+the same structure in MongoDB.
+
+To query the database, I've used the Spring Data repositories. They allow me to easily save, update
+and find by Id my entites. I can also create some custom queries or custom aggregations for more
+advanced cases.
+
+### MongoDB setup
+
+Here are the commands I've used to create the database and the associated users.
+
+´´´
+docker run -d -p 27017:27017 -e MONGO_INITDB_ROOT_PASSWORD=secret -e MONGO_INITDB_ROOT_USERNAME=mongoadmin  mongo:5.0.6 --bind_ip_all
+mongosh "mongodb://mongoadmin:secret@127.0.0.1:27017/socialnetworkdb?authSource=admin"
+db.createUser({user: "sergio", pwd: "ser", roles: [{role: "dbOwner", db: "socialnetworkdb"}]})
+mongosh "mongodb://sergio:ser@127.0.0.1:27017/socialnetworkdb"
+
+´´´
+

@@ -2,7 +2,7 @@ package com.sergio.socialnetwork.dto;
 
 public class UserDto {
 
-    private Long id;
+    private String id;
     private String firstName;
     private String lastName;
     private String login;
@@ -12,18 +12,18 @@ public class UserDto {
         super();
     }
 
-    public UserDto(Long id, String firstName, String lastName, String login) {
+    public UserDto(String id, String firstName, String lastName, String login) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

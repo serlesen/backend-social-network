@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class MessageDto {
 
-    private Long id;
+    private String id;
     private String content;
     private UserSummaryDto userDto;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
@@ -16,18 +16,18 @@ public class MessageDto {
         super();
     }
 
-    public MessageDto(Long id, String content, UserSummaryDto userDto, LocalDateTime createdDate) {
+    public MessageDto(String id, String content, UserSummaryDto userDto, LocalDateTime createdDate) {
         this.id = id;
         this.content = content;
         this.userDto = userDto;
         this.createdDate = createdDate;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -26,13 +26,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/profile")
-    public ResponseEntity<ProfileDto> getUserProfile(@PathVariable Long userId) {
+    public ResponseEntity<ProfileDto> getUserProfile(@PathVariable String userId) {
         return ResponseEntity.ok(userService.getProfile(userId));
     }
 
     @PostMapping("/friends/{friendId}")
     public ResponseEntity<Void> addFriend(@AuthenticationPrincipal UserDto userDto,
-                                          @PathVariable Long friendId) {
+                                          @PathVariable String friendId) {
         userService.addFriend(userDto, friendId);
         return ResponseEntity.noContent().build();
     }
