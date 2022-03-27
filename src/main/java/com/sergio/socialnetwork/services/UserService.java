@@ -17,7 +17,7 @@ public class UserService {
     public ProfileDto getProfile(Long userId) {
         return new ProfileDto(new UserSummaryDto(1L, "Sergio", "Lema"),
                 Arrays.asList(new UserSummaryDto(2L, "John", "Doe")),
-                Arrays.asList(new MessageDto(1L, "My message")),
+                Arrays.asList(new MessageDto(1L, "My message", null, null)),
                 Arrays.asList(new ImageDto(1L, "Title", null)));
     }
 
