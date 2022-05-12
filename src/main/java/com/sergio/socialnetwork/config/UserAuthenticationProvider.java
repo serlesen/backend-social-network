@@ -3,6 +3,8 @@ package com.sergio.socialnetwork.config;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import com.sergio.socialnetwork.dto.CredentialsDto;
@@ -14,6 +16,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -57,12 +60,18 @@ public class UserAuthenticationProvider {
 
         UserDto user = authenticationService.findByLogin(login);
 
-        return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+        return new UsernamePasswordAuthenticationToken(
+                user,
+                null,
+                user.getAuthorities().stream().map(authority -> (GrantedAuthority) () -> authority).collect(Collectors.toList()));
     }
 
     public Authentication validateCredentials(CredentialsDto credentialsDto) {
         UserDto user = authenticationService.authenticate(credentialsDto);
-        return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+        return new UsernamePasswordAuthenticationToken(
+                user,
+                null,
+                user.getAuthorities().stream().map(authority -> (GrantedAuthority) () -> authority).collect(Collectors.toList()));
     }
 
 

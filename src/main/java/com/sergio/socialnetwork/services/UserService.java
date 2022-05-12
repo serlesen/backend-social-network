@@ -1,6 +1,7 @@
 package com.sergio.socialnetwork.services;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.sergio.socialnetwork.dto.ImageDto;
@@ -31,7 +32,7 @@ public class UserService {
     }
 
     public UserDto signUp(SignUpDto user) {
-        return new UserDto(1L, "Sergio", "Lema", "login", "token");
+        return new UserDto(1L, "Joe", "Smith", "joe", "token", Collections.emptyList());
     }
 
     public void signOut(UserDto user) {

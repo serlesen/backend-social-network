@@ -8,6 +8,7 @@ import com.sergio.socialnetwork.dto.SignUpDto;
 import com.sergio.socialnetwork.dto.UserDto;
 import com.sergio.socialnetwork.services.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,18 +29,21 @@ public class AuthenticationController {
         this.userAuthenticationProvider = userAuthenticationProvider;
     }
 
+    @PreAuthorize("permitAll")
     @PostMapping("/signIn")
     public ResponseEntity<UserDto> signIn(@AuthenticationPrincipal UserDto user) {
         user.setToken(userAuthenticationProvider.createToken(user.getLogin()));
         return ResponseEntity.ok(user);
     }
 
+    @PreAuthorize("permitAll")
     @PostMapping("/signUp")
     public ResponseEntity<UserDto> signUp(@RequestBody @Valid SignUpDto user) {
         UserDto createdUser = userService.signUp(user);
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId() + "/profile")).body(createdUser);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/signOut")
     public ResponseEntity<Void> signOut(@AuthenticationPrincipal UserDto user) {
         SecurityContextHolder.clearContext();

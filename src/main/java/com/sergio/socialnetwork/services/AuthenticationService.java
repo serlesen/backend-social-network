@@ -1,6 +1,7 @@
 package com.sergio.socialnetwork.services;
 
 import java.nio.CharBuffer;
+import java.util.List;
 
 import com.sergio.socialnetwork.dto.CredentialsDto;
 import com.sergio.socialnetwork.dto.UserDto;
@@ -19,14 +20,17 @@ public class AuthenticationService {
     public UserDto authenticate(CredentialsDto credentialsDto) {
         String encodedMasterPassword = passwordEncoder.encode(CharBuffer.wrap("the-password"));
         if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), encodedMasterPassword)) {
-            return new UserDto(1L, "Sergio", "Lema", "login", "token");
+            return this.findByLogin(credentialsDto.getLogin());
         }
         throw new RuntimeException("Invalid password");
     }
 
     public UserDto findByLogin(String login) {
-        if ("login".equals(login)) {
-            return new UserDto(1L, "Sergio", "Lema", "login", "token");
+        if ("sergio".equals(login)) {
+            return new UserDto(1L, "Sergio", "Lema", "sergio", "token", List.of("ROLE_VIEWER", "ROLE_EDITOR"));
+        }
+        if ("john".equals(login)) {
+            return new UserDto(1L, "John", "Doe", "john", "token", List.of("ROLE_VIEWER"));
         }
         throw new RuntimeException("Invalid login");
     }

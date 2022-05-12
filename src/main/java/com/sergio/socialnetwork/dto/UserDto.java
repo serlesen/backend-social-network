@@ -1,5 +1,7 @@
 package com.sergio.socialnetwork.dto;
 
+import java.util.List;
+
 public class UserDto {
 
     private Long id;
@@ -7,17 +9,19 @@ public class UserDto {
     private String lastName;
     private String login;
     private String token;
+    private List<String> authorities;
 
     public UserDto() {
         super();
     }
 
-    public UserDto(Long id, String firstName, String lastName, String login, String token) {
+    public UserDto(Long id, String firstName, String lastName, String login, String token, List<String> authorities) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
         this.token = token;
+        this.authorities = authorities;
     }
 
     public Long getId() {
@@ -58,5 +62,13 @@ public class UserDto {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public List<String> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(List<String> authorities) {
+        this.authorities = authorities;
     }
 }
