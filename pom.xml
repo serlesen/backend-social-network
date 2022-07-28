@@ -205,6 +205,50 @@
                             <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>jacoco-check-ut</id>
+                    	<phase>verify</phase>
+                    	<goals>
+                    	    <goal>check</goal>
+                    	</goals>
+                    	<configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.70</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                        </configuration>
+                    </execution>
+		    <execution>
+                        <id>jacoco-check-it</id>
+                    	<phase>verify</phase>
+                    	<goals>
+                    	    <goal>check</goal>
+                    	</goals>
+                    	<configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.70</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
+                        </configuration>
+		    </execution>
                 </executions>
             </plugin>
             <!-- Used for unit tests -->

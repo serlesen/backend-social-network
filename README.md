@@ -182,7 +182,7 @@ integration tests separatly.
 
 First, I need to separate the unit tests and the integration tests in my maven workflow. For that, I've added the
 surefire and failsafe plugins to run the tests separatly. I must ensure to have the integration tests named with
-the '*IT.java' suffix to be easily identified. I need to use those plugins because they have much more configurations
+the '\*IT.java' suffix to be easily identified. I need to use those plugins because they have much more configurations
 than Maven (which will be useful to connect jacoco).
 
 When the tests are run separatly, I can configure the jacoco plugin. The javacoco plugin must add an argument to
@@ -203,4 +203,49 @@ For the configuration, I show for both loggers the different layout to reach a s
 to print to a file and to the console at the same time.
 
 
+## Chapter 11
+
+In this video I setup some Github action workflows. I create two separated workflows. One for the pipelines coming
+from the main branch, which will be deployed. And the second for the remaining branches, to ensure all the tests,
+integration tests and coverage are respected.
+
+To have separated workflows, I must include and exclude the branches respectively in both workflows to correclty
+target them. For the deployment workflow, I run two jobs: with some unit tests and with the deploy if the tests are
+successfull. For that, I need to create a dependency between the two jobs inside this workflow.
+
+To run this, I've used the self-hosted runners of Github. To use a self-hosted runner of Github, I need to create a Docker image
+in localhost which is linked to the Github repository. This way, all the pipeline will run in my local image.
+
+To create a self hosted runner, I need first to retrieve the runner binnaries from https://github.com/serlesen/backend-social-network/settings/actions/runners/new.
+Then, I need to configure it with the given token (available in the previous URL). Finally, I need to indicate in my
+pipelines to run on a self hosted runner. To ease this and avoid depending on the hosted OS, I've created a Docker image
+to do so as following:
+
+```
+FROM debian:latest
+
+ARG TOKEN=not-set
+
+RUN apt-get update && apt-get install -y curl libgtk-dotnet3.0-cil
+
+ENV RUNNER_ALLOW_RUNASROOT=1
+
+RUN curl -o actions-runner-linux-x64-2.294.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.294.0/actions-runner-linux-x64-2.294.0.tar.gz && \
+	tar xzf ./actions-runner-linux-x64-2.294.0.tar.gz
+RUN ./config.sh --url https://github.com/serlesen/backend-social-network --token $TOKEN --name linux --work _work --runasservice --disableupdate
+
+CMD ["./run.sh"]
+```
+
+This way, building the image will take as argument the token as following:
+
+```
+docker build . -t github_actions_runner --build-arg TOKEN=<the-token>
+```
+
+And run it as follows:
+
+```
+docker run github_actions_runner
+```
 
